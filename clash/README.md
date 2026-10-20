@@ -62,6 +62,8 @@ const CONFIG = {
 - 新建 `AI 专用` 组并把常见 AI 域名路由过去；
 - 把最后的 `MATCH` 指向 `总出口`。
 
+AI 域名清单在脚本顶部的 `AI_DOMAINS` / `AI_EXACT_DOMAINS`，可自行增删。默认覆盖 60+ 服务：OpenAI / Anthropic Claude / Google Gemini / Microsoft Copilot / GitHub Copilot / Perplexity / xAI Grok / Mistral / Cohere / Groq / OpenRouter / HuggingFace / Midjourney / Suno / Runway / Cursor / Windsurf 等。
+
 ## 方式三：系统代理
 
 不装 Clash 也可以。把 Windows 系统代理设为：

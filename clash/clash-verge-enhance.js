@@ -9,7 +9,7 @@
 //   - 注入一个指向本机 warp-lite 的 HTTP 代理节点
 //   - 新建「总出口」fallback 组：WARP 优先，WARP 不可用时自动用机场节点
 //   - 把最后一条 MATCH 规则指向「总出口」
-//   - 可选：把 AI 域名单独指向一个手动选择的组
+//   - 把常见 AI 域名单独指向「AI 专用」组（可在组里手动选节点）
 
 const CONFIG = {
   warp: {
@@ -23,17 +23,40 @@ const CONFIG = {
   aiGroup: 'AI 专用',            // 设为 null 可关闭 AI 分组
   aiNodeGroup: '自动选择',        // AI 组默认选哪个（通常是你的机场 url-test 组）
   primaryGroup: 'XFLTD',         // 你订阅里用来兜底的主选择组
-  aiDomains: [
-    'chatgpt.com', 'openai.com', 'chat.com', 'sora.com',
-    'oaistatic.com', 'oaiusercontent.com',
-    'anthropic.com', 'claude.ai', 'claudeusercontent.com',
-    'gemini.google.com', 'bard.google.com', 'aistudio.google.com',
-    'makersuite.google.com', 'notebooklm.google.com',
-    'generativelanguage.googleapis.com',
-    'perplexity.ai', 'x.ai', 'grok.com',
-    'copilot.microsoft.com', 'poe.com', 'midjourney.com', 'character.ai',
-  ],
 };
+
+// 常见 AI 服务（按域名后缀匹配）
+const AI_DOMAINS = [
+  // OpenAI
+  'chatgpt.com', 'openai.com', 'chat.com', 'sora.com', 'oaistatic.com', 'oaiusercontent.com',
+  'openai.azure.com',
+  // Anthropic / Claude
+  'anthropic.com', 'claude.ai', 'claude.com', 'claudeusercontent.com',
+  // Google Gemini / DeepMind
+  'gemini.google.com', 'bard.google.com', 'aistudio.google.com', 'makersuite.google.com',
+  'notebooklm.google.com', 'generativelanguage.googleapis.com', 'aiplatform.googleapis.com',
+  'ai.google.dev', 'deepmind.google', 'deepmind.com', 'labs.google',
+  // Microsoft / GitHub Copilot
+  'copilot.microsoft.com', 'copilot.cloud.microsoft', 'sydney.bing.com', 'edgeservices.bing.com',
+  'githubcopilot.com',
+  // Search / chat
+  'perplexity.ai', 'x.ai', 'grok.com', 'poe.com', 'character.ai',
+  // Model providers
+  'mistral.ai', 'cohere.com', 'groq.com', 'together.ai', 'together.xyz', 'openrouter.ai',
+  'replicate.com', 'huggingface.co', 'hf.co', 'stability.ai',
+  // Image / video / audio
+  'midjourney.com', 'elevenlabs.io', 'suno.com', 'suno.ai', 'udio.com', 'runwayml.com',
+  'pika.art', 'lumalabs.ai', 'ideogram.ai', 'leonardo.ai', 'blackforestlabs.ai',
+  'klingai.com', 'hailuoai.com', 'minimax.io', 'minimaxi.com', 'heygen.com', 'synthesia.io',
+  // Coding assistants
+  'cursor.com', 'cursor.sh', 'windsurf.com', 'codeium.com', 'tabnine.com',
+  'v0.dev', 'v0.app', 'bolt.new', 'lovable.dev',
+];
+
+// 精确域名（避免把整个 githubusercontent 都路由走）
+const AI_EXACT_DOMAINS = [
+  'copilot-proxy.githubusercontent.com',
+];
 
 function main(config) {
   const w = CONFIG.warp;
@@ -88,7 +111,8 @@ function main(config) {
   // AI 规则
   const rules = Array.isArray(config.rules) ? config.rules : (config.rules = []);
   const aiRules = CONFIG.aiGroup
-    ? CONFIG.aiDomains.map(d => `DOMAIN-SUFFIX,${d},${CONFIG.aiGroup}`)
+    ? AI_DOMAINS.map(d => `DOMAIN-SUFFIX,${d},${CONFIG.aiGroup}`)
+      .concat(AI_EXACT_DOMAINS.map(d => `DOMAIN,${d},${CONFIG.aiGroup}`))
     : [];
   config.rules = aiRules.concat(rules);
 
