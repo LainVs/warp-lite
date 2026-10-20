@@ -1,0 +1,16 @@
+# runtime / downloaded binaries
+bin/
+usque/
+logs/
+*.exe
+*.zip
+*.log
+
+# local config (contains WARP identity)
+config.json
+warp.yaml
+
+# OS junk
+Thumbs.db
+.DS_Store
+desktop.ini

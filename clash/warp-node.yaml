@@ -1,0 +1,13 @@
+# warp-lite node snippet for Clash / mihomo
+#
+# 1. 把下面这一段合并进你的 Clash 配置（或 Clash Verge 的 proxies 合并模板）。
+# 2. 把 password 换成 `warpctl.bat status` 里显示的密码。
+# 3. 在需要的代理组里选择 "WARP Lite"。
+
+proxies:
+  - name: WARP Lite
+    type: http
+    server: 127.0.0.1
+    port: 17894
+    username: warp
+    password: "REPLACE_WITH_YOUR_PASSWORD"
