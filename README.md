@@ -45,7 +45,7 @@ Cloudflare WARP  →  互联网
 ## 快速开始（Windows 10/11）
 
 ```powershell
-git clone https://github.com/<your-name>/warp-lite.git
+git clone https://github.com/LainVs/warp-lite.git
 cd warp-lite
 powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
